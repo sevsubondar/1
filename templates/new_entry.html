@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настроения за {{ day }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #A9B388; /* Laurel Green */
+            color: #5F6F52; /* Dark Olive Green */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 80%;
+            height: 90%;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .line {
+            position: absolute;
+            top: -20px;
+            bottom: 20px;
+            left: 48%;
+            width: 80px;
+            background-color: #5F6F52; /* Dark Olive Green */
+            border-radius: 20px; /* Закругленные края */
+        }
+
+        .content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+        }
+
+        .left-content, .right-content {
+            background-color: #F9EBC7; /* Lemon Meringue */
+            padding: 20px;
+            margin: 0 20px;
+            border-radius: 10px;
+            width: 48%; /* 48% чтобы оставался небольшой промежуток */
+            height: 90%;
+            overflow-y: auto;
+        }
+
+        h2, h3 {
+            color: #5F6F52; /* Dark Olive Green */
+        }
+
+        /* Стили для формы */
+        form {
+            background-color: #FFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        select, textarea, input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            background-color: #5F6F52; /* Dark Olive Green */
+            color: white;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #4b5b44; /* Slightly darker */
+        }
+
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+
+        /* Стили для отображения настроений */
+        ul {
+            padding: 0;
+            list-style-type: none;
+            margin-top: 20px;
+        }
+
+        li {
+            background-color: #FFF;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Для выделения "выбранного" значения в селекте */
+        select:focus {
+            border-color: #5F6F52; /* Dark Olive Green */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="line"></div>
+
+        <div class="content-wrapper">
+            <div class="left-content">
+                <h2>Настроения за {{ day }}:</h2>
+
+                <!-- Форма для выбора настроений -->
+                <form method="POST">
+                    <h3>Выберите эмоцию для дня {{ day }}</h3>
+
+                    <label for="morning_mood">Утро:</label>
+                    <select name="morning_mood">
+                        <option value="😞" {% if mood.morning_mood == '😞' %}selected{% endif %}>Ужасно 😞</option>
+                        <option value="😕" {% if mood.morning_mood == '😕' %}selected{% endif %}>Плохо 😕</option>
+                        <option value="😐" {% if mood.morning_mood == '😐' %}selected{% endif %}>Нормально 😐</option>
+                        <option value="🙂" {% if mood.morning_mood == '🙂' %}selected{% endif %}>Хорошо 🙂</option>
+                        <option value="😊" {% if mood.morning_mood == '😊' %}selected{% endif %}>Отлично 😊</option>
+                    </select><br>
+
+                    <label for="afternoon_mood">День:</label>
+                    <select name="afternoon_mood">
+                        <option value="😞" {% if mood.afternoon_mood == '😞' %}selected{% endif %}>Ужасно 😞</option>
+                        <option value="😕" {% if mood.afternoon_mood == '😕' %}selected{% endif %}>Плохо 😕</option>
+                        <option value="😐" {% if mood.afternoon_mood == '😐' %}selected{% endif %}>Нормально 😐</option>
+                        <option value="🙂" {% if mood.afternoon_mood == '🙂' %}selected{% endif %}>Хорошо 🙂</option>
+                        <option value="😊" {% if mood.afternoon_mood == '😊' %}selected{% endif %}>Отлично 😊</option>
+                    </select><br>
+
+                    <label for="evening_mood">Вечер:</label>
+                    <select name="evening_mood">
+                        <option value="😞" {% if mood.evening_mood == '😞' %}selected{% endif %}>Ужасно 😞</option>
+                        <option value="😕" {% if mood.evening_mood == '😕' %}selected{% endif %}>Плохо 😕</option>
+                        <option value="😐" {% if mood.evening_mood == '😐' %}selected{% endif %}>Нормально 😐</option>
+                        <option value="🙂" {% if mood.evening_mood == '🙂' %}selected{% endif %}>Хорошо 🙂</option>
+                        <option value="😊" {% if mood.evening_mood == '😊' %}selected{% endif %}>Отлично 😊</option>
+                    </select><br>
+
+                    <label for="night_mood">Ночь:</label>
+                    <select name="night_mood">
+                        <option value="😞" {% if mood.night_mood == '😞' %}selected{% endif %}>Ужасно 😞</option>
+                        <option value="😕" {% if mood.night_mood == '😕' %}selected{% endif %}>Плохо 😕</option>
+                        <option value="😐" {% if mood.night_mood == '😐' %}selected{% endif %}>Нормально 😐</option>
+                        <option value="🙂" {% if mood.night_mood == '🙂' %}selected{% endif %}>Хорошо 🙂</option>
+                        <option value="😊" {% if mood.night_mood == '😊' %}selected{% endif %}>Отлично 😊</option>
+                    </select><br>
+
+                    <input type="submit" value="Сохранить" />
+                </form>
+
+            </div>
+
+            <div class="right-content">
+                <h3>Ваши текущие настроения:</h3>
+                <ul>
+                    <li><strong>Утро:</strong> {{ mood.morning_mood if mood else 'Не выбрано' }}</li>
+                    <li><strong>День:</strong> {{ mood.afternoon_mood if mood else 'Не выбрано' }}</li>
+                    <li><strong>Вечер:</strong> {{ mood.evening_mood if mood else 'Не выбрано' }}</li>
+                    <li><strong>Ночь:</strong> {{ mood.night_mood if mood else 'Не выбрано' }}</li>
+                    <li><strong>Заметка:</strong> {{ mood.note if mood else 'Нет заметки' }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

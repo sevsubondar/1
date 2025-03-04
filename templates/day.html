@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настроения за {{ day }}</title>
+</head>
+<body>
+
+<h2>Настроения за {{ day }}-{{ month }} :</h2>
+    <!-- Форма для выбора настроений -->
+    <form method="POST">
+        <label for="morning_mood">Утро:</label>
+        <select name="morning_mood">
+            <option value="😞" {% if mood and mood.morning_mood == '😞' %}selected{% endif %}>Ужасно 😞</option>
+            <option value="😕" {% if mood and mood.morning_mood == '😕' %}selected{% endif %}>Плохо 😕</option>
+            <option value="😐" {% if mood and mood.morning_mood == '😐' %}selected{% endif %}>Нормально 😐</option>
+            <option value="🙂" {% if mood and mood.morning_mood == '🙂' %}selected{% endif %}>Хорошо 🙂</option>
+            <option value="😊" {% if mood and mood.morning_mood == '😊' %}selected{% endif %}>Отлично 😊</option>
+        </select><br>
+
+        <label for="afternoon_mood">День:</label>
+        <select name="afternoon_mood">
+            <option value="😞" {% if mood and mood.afternoon_mood == '😞' %}selected{% endif %}>Ужасно 😞</option>
+            <option value="😕" {% if mood and mood.afternoon_mood == '😕' %}selected{% endif %}>Плохо 😕</option>
+            <option value="😐" {% if mood and mood.afternoon_mood == '😐' %}selected{% endif %}>Нормально 😐</option>
+            <option value="🙂" {% if mood and mood.afternoon_mood == '🙂' %}selected{% endif %}>Хорошо 🙂</option>
+            <option value="😊" {% if mood and mood.afternoon_mood == '😊' %}selected{% endif %}>Отлично 😊</option>
+        </select><br>
+
+        <label for="evening_mood">Вечер:</label>
+        <select name="evening_mood">
+            <option value="😞" {% if mood and mood.evening_mood == '😞' %}selected{% endif %}>Ужасно 😞</option>
+            <option value="😕" {% if mood and mood.evening_mood == '😕' %}selected{% endif %}>Плохо 😕</option>
+            <option value="😐" {% if mood and mood.evening_mood == '😐' %}selected{% endif %}>Нормально 😐</option>
+            <option value="🙂" {% if mood and mood.evening_mood == '🙂' %}selected{% endif %}>Хорошо 🙂</option>
+            <option value="😊" {% if mood and mood.evening_mood == '😊' %}selected{% endif %}>Отлично 😊</option>
+        </select><br>
+
+        <label for="night_mood">Ночь:</label>
+        <select name="night_mood">
+            <option value="😞" {% if mood and mood.night_mood == '😞' %}selected{% endif %}>Ужасно 😞</option>
+            <option value="😕" {% if mood and mood.night_mood == '😕' %}selected{% endif %}>Плохо 😕</option>
+            <option value="😐" {% if mood and mood.night_mood == '😐' %}selected{% endif %}>Нормально 😐</option>
+            <option value="🙂" {% if mood and mood.night_mood == '🙂' %}selected{% endif %}>Хорошо 🙂</option>
+            <option value="😊" {% if mood and mood.night_mood == '😊' %}selected{% endif %}>Отлично 😊</option>
+        </select><br>
+
+        <label for="note">Заметка:</label>
+        <textarea name="note" rows="4" cols="50">{% if mood %}{{ mood.note }}{% endif %}</textarea><br>
+
+        <input type="submit" value="Сохранить" />
+    </form>
+
+    <hr>
+
+    <!-- Отображение текущих настроений -->
+    <h3>Ваши текущие настроения:</h3>
+    <ul>
+        <li><strong>Утро:</strong> {{ mood.morning_mood if mood else 'Не выбрано' }}</li>
+        <li><strong>День:</strong> {{ mood.afternoon_mood if mood else 'Не выбрано' }}</li>
+        <li><strong>Вечер:</strong> {{ mood.evening_mood if mood else 'Не выбрано' }}</li>
+        <li><strong>Ночь:</strong> {{ mood.night_mood if mood else 'Не выбрано' }}</li>
+        <li><strong>Заметка:</strong> {{ mood.note if mood else 'Нет заметки' }}</li>
+    </ul>
+
+</body>
+</html>

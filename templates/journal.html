@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный дневник</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #A9B388; /* Laurel Green */
+            color: #5F6F52; /* Dark Olive Green */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 80%;
+            height: 90%;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+        .line {
+            position: absolute;
+            top: -20px;
+            bottom: 20px;
+            left: 48%;
+            width: 80px;
+            background-color: #5F6F52; /* Dark Olive Green */
+            border-radius: 20px; /* Закругленные края */
+        }
+        .content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+        }
+        .left-content, .right-content {
+            background-color: #F9EBC7; /* Lemon Meringue */
+            padding: 20px;
+            margin: 0 20px;
+            border-radius: 10px;
+            width: 48%; /* 48% чтобы оставался небольшой промежуток */
+            height: 90%;
+            overflow-y: auto;
+        }
+        h2, h3 {
+            color: #5F6F52; /* Dark Olive Green */
+        }
+        .entry-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .entry-list li {
+            background-color: #FFFFFF;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .buttons a {
+            background-color: #C4661F; /* Alloy Orange */
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .buttons a:hover {
+            background-color: #783D19; /* Russet */
+        }
+        .calendar {
+            margin-top: 30px;
+            background-color: #B99470; /* Camel */
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .italic-text {
+            font-style: italic;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .smileys {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        .smiley {
+            font-size: 6em; /* Увеличили размер смайликов */
+            cursor: pointer;
+        }
+        .time-cards {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .card {
+            width: 45%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .card span {
+            font-size: 4em; /* Размер смайлика */
+            margin-bottom: 10px;
+        }
+        .card h4 {
+            margin: 10px 0;
+        }
+        .active {
+            background-color: #e8f4e8;
+            border: 2px solid #5F6F52; /* Устанавливаем активное состояние карточки */
+        }
+                }
+        .calendar {
+            margin-top: 30px;
+            background-color: #B99470; /* Camel */
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .calendar-body {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .day {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #FFF;
+            cursor: pointer;
+        }
+        .day:hover {
+            background-color: #e0e0e0;
+        }
+        .day span {
+            font-size: 14px;
+        }
+        .day .plus {
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .note-section {
+        margin-top: 30px;
+        background-color: #FEFAE0; /* Цвет прямоугольника */
+        padding: 20px;
+        border-radius: 10px;
+        width: 95%;
+    }
+
+    .note-section textarea {
+        width: 95%;
+        height: 120px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        padding: 10px;
+        resize: vertical;
+    }
+
+    .note-section button {
+        background-color: #5F6F52;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    .note-section button:hover {
+        background-color: #4b5b44;
+    }
+        /* Стили для модального окна на фоне */
+        #editModal .modal-content {
+            margin-top: 10%;
+        }
+
+        /* Закрытие модального окна */
+        #editModal.open {
+            display: flex;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Вертикальная линия посередине -->
+        <div class="line"></div>
+
+        <!-- Контейнер для разделения содержимого -->
+        <div class="content-wrapper">
+            <!-- Левая часть -->
+            <div class="left-content">
+                <div class="header">
+                    <h2>Добро пожаловать в личный дневник, {{ current_user.username }}!</h2>
+                        <div class="buttons">
+                            <a href="{{ url_for('logout') }}">Выйти</a>
+                        </div>
+                    <!-- Курсивный текст под заголовком -->
+                    <div class="italic-text">Как прошел ваш день?</div>
+
+                    <!-- Места для смайликов -->
+                    <div class="smileys">
+                        <span class="smiley" title="Ужасно" onclick="setMood('😞')">😞</span>
+                        <span class="smiley" title="Плохо" onclick="setMood('😕')">😕</span>
+                        <span class="smiley" title="Нормально" onclick="setMood('😐')">😐</span>
+                        <span class="smiley" title="Хорошо" onclick="setMood('🙂')">🙂</span>
+                        <span class="smiley" title="Отлично" onclick="setMood('😊')">😊</span>
+                    </div>
+
+                    <div class="time-cards">
+                        <!-- Карточки для времени суток -->
+                        <div class="card" id="morning" onclick="selectCard('morning')">
+                            <span id="morning-img">🌅</span>
+                            <h4>Утро</h4>
+                            <p>Ваше настроение</p>
+                        </div>
+                        <div class="card" id="afternoon" onclick="selectCard('afternoon')">
+                            <span id="afternoon-img">🌞</span>
+                            <h4>День</h4>
+                            <p>Ваше настроение</p>
+                        </div>
+                    </div>
+                    <div class="time-cards">
+                        <div class="card" id="evening" onclick="selectCard('evening')">
+                            <span id="evening-img">🌇</span>
+                            <h4>Вечер</h4>
+                            <p>Ваше настроение</p>
+                        </div>
+                        <div class="card" id="night" onclick="selectCard('night')">
+                            <span id="night-img">🌙</span>
+                            <h4>Ночь</h4>
+                            <p>Ваше настроение</p>
+                        </div>
+                    </div>
+                </div>
+
+            <h2>Ваши записи за сегодня:</h2>
+<ul>
+    {% for entry in entries %}
+        <li>
+            <strong>Дата:</strong> {{ entry.date }} <br>
+            <strong>Утро:</strong> {{ entry.morning_mood }} <br>
+            <strong>День:</strong> {{ entry.afternoon_mood }} <br>
+            <strong>Вечер:</strong> {{ entry.evening_mood }} <br>
+            <strong>Ночь:</strong> {{ entry.night_mood }} <br>
+            <strong>Заметка:</strong> {{ entry.note }} <br>
+
+            <!-- Кнопка для редактирования -->
+            <button onclick="editEntry({{ entry.id }}, '{{ entry.morning_mood }}', '{{ entry.afternoon_mood }}', '{{ entry.evening_mood }}', '{{ entry.night_mood }}', '{{ entry.note }}')">Редактировать</button>
+        </li>
+    {% else %}
+        <p>Сегодня у вас еще нет записей.</p>
+    {% endfor %}
+</ul>
+
+<!-- Модальное окно для редактирования -->
+<div id="editModal" style="display:none;">
+    <h3>Редактирование записи</h3>
+    <form id="editForm" method="POST" action="{{ url_for('edit_entry') }}">
+        <input type="hidden" id="entry_id" name="entry_id">
+
+        <label for="morning_mood">Утро:</label>
+        <select id="morning_mood" name="morning_mood">
+            <option value="😊">😊 Отлично</option>
+            <option value="🙂">🙂 Хорошо</option>
+            <option value="😐">😐 Нормально</option>
+            <option value="😕">😕 Плохо</option>
+            <option value="😞">😞 Ужасно</option>
+        </select><br>
+
+        <label for="afternoon_mood">День:</label>
+        <select id="afternoon_mood" name="afternoon_mood">
+            <option value="😊">😊 Отлично</option>
+            <option value="🙂">🙂 Хорошо</option>
+            <option value="😐">😐 Нормально</option>
+            <option value="😕">😕 Плохо</option>
+            <option value="😞">😞 Ужасно</option>
+        </select><br>
+
+        <label for="evening_mood">Вечер:</label>
+        <select id="evening_mood" name="evening_mood">
+            <option value="😊">😊 Отлично</option>
+            <option value="🙂">🙂 Хорошо</option>
+            <option value="😐">😐 Нормально</option>
+            <option value="😕">😕 Плохо</option>
+            <option value="😞">😞 Ужасно</option>
+        </select><br>
+
+        <label for="night_mood">Ночь:</label>
+        <select id="night_mood" name="night_mood">
+            <option value="😊">😊 Отлично</option>
+            <option value="🙂">🙂 Хорошо</option>
+            <option value="😐">😐 Нормально</option>
+            <option value="😕">😕 Плохо</option>
+            <option value="😞">😞 Ужасно</option>
+        </select><br>
+
+        <label for="note">Заметка:</label>
+        <textarea id="note" name="note"></textarea><br>
+
+        <button type="submit">Сохранить изменения</button>
+        <button type="button" onclick="closeModal()">Отмена</button>
+    </form>
+</div>
+
+
+        <h3>График настроений</h3>
+            <div class="filters">
+    <!--<h3>Фильтр по дате и настроению</h3>-->
+    <form action="{{ url_for('journal') }}" method="GET">
+        <!-- Поле выбора даты -->
+         <!--<label for="date">Выберите дату:</label>
+        <input type="date" id="date" name="date" value="{{ selected_date }}">
+
+       Поле выбора настроения
+        <label for="mood">Выберите настроение:</label>
+        <select id="mood" name="mood">
+            <option value="">Все</option>
+            <option value="😊" {% if selected_mood == '😊' %}selected{% endif %}>Отлично</option>
+            <option value="🙂" {% if selected_mood == '🙂' %}selected{% endif %}>Хорошо</option>
+            <option value="😐" {% if selected_mood == '😐' %}selected{% endif %}>Нормально</option>
+            <option value="😕" {% if selected_mood == '😕' %}selected{% endif %}>Плохо</option>
+            <option value="😞" {% if selected_mood == '😞' %}selected{% endif %}>Ужасно</option>
+        </select>-->
+
+        <!-- Кнопка отправки формы -->
+        <!--<button type="submit">Применить фильтры</button>-->
+    </form>
+            </div>
+         <canvas id="moodChart"></canvas>
+            </div>
+
+<!-- Правая часть -->
+<div class="right-content">
+
+    <div class="calendar">
+
+        <div class="calendar-header">
+            <button onclick="changeMonth(-1)">&#8249;</button>
+            <span id="month-year"></span>
+            <button onclick="changeMonth(1)">&#8250;</button>
+        </div>
+        <div class="calendar-body">
+            <div class="day">Пн</div>
+            <div class="day">Вт</div>
+            <div class="day">Ср</div>
+            <div class="day">Чт</div>
+            <div class="day">Пт</div>
+            <div class="day">Сб</div>
+            <div class="day">Вс</div>
+            <!-- Дни месяца будут вставляться динамически с помощью JS -->
+        </div>
+    </div>
+
+    <div class="note-section">
+        <h3>Ваши заметки:</h3>
+        <textarea name="note" rows="6" cols="40" placeholder="Напишите заметку..." style="background-color: #FEFAE0;"></textarea>
+        <br>
+        <button onclick="saveNote()">Сохранить заметку</button>
+    </div>
+
+
+</div>
+
+<script>
+    // Переменные для календаря
+    let currentDate = new Date();
+    let selectedCard = null;
+
+    // Функция для рендеринга календаря
+    function renderCalendar() {
+        const monthYear = document.getElementById('month-year');
+        const calendarBody = document.querySelector('.calendar-body');
+        const month = currentDate.getMonth();
+        const year = currentDate.getFullYear();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const totalDays = lastDay.getDate();
+        const firstDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; //
+        const totalSlots = Math.ceil((totalDays + firstDayOfWeek) / 7) * 7;
+
+        // Исправленный вывод для отображения месяца и года
+        monthYear.textContent = `${firstDay.toLocaleString('default', { month: 'long' })} ${year}`;
+
+        calendarBody.innerHTML = ''; // Clear calendar
+        for (let i = 0; i < totalSlots; i++) {
+            const dayCell = document.createElement('div');
+            dayCell.classList.add('day');
+
+            const dayNumber = i - firstDayOfWeek + 1;
+            if (dayNumber > 0 && dayNumber <= totalDays) {
+                dayCell.textContent = dayNumber;
+                const plusButton = document.createElement('span');
+                plusButton.classList.add('plus');
+                plusButton.textContent = '+';
+                dayCell.appendChild(plusButton);
+                dayCell.addEventListener('click', () => goToDayPage(dayNumber));
+            } else {
+                dayCell.textContent = '';
+            }
+            calendarBody.appendChild(dayCell);
+        }
+    }
+
+    // Функция для перехода на страницу с выбранным днем
+    function goToDayPage(dayNumber) {
+        // Исправленный переход с правильной строкой URL
+         window.location.href = `/day?day=${dayNumber}`;
+    }
+
+    // Функция для смены месяца
+    function changeMonth(direction) {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        renderCalendar();
+    }
+
+    // Функция для выбора карточки времени суток
+    function selectCard(cardId) {
+        // Снимаем активное состояние с предыдущей карточки
+        if (selectedCard) {
+            document.getElementById(selectedCard).classList.remove('active');
+        }
+
+        // Устанавливаем активное состояние на новую карточку
+        selectedCard = cardId;
+        document.getElementById(cardId).classList.add('active');
+    }
+
+    // Функция для установки настроения
+    function setMood(mood) {
+        if (selectedCard) {
+            // Устанавливаем смайлик в выбранную карточку
+            document.getElementById(selectedCard + '-img').textContent = mood;
+        } else {
+            alert('Пожалуйста, выберите карточку времени суток');
+        }
+    }
+
+    // Initial render
+    renderCalendar();
+
+
+// Обновление данных для графика
+var moodData = {{ mood_data | tojson }};
+
+// Функция для обновления графика
+function updateChart() {
+    var ctx = document.getElementById('moodChart').getContext('2d');
+    var moodChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['😊 - Отлично', '🙂 - Хорошо', '😐 - Нормально', '😕 - Плохо', '😞 - Ужасно'], // Эмоции по вертикали
+            datasets: [{
+                label: 'Количество за день',
+                data: [
+                    moodData['😊'].morning + moodData['😊'].afternoon + moodData['😊'].evening + moodData['😊'].night,
+                    moodData['🙂'].morning + moodData['🙂'].afternoon + moodData['🙂'].evening + moodData['🙂'].night,
+                    moodData['😐'].morning + moodData['😐'].afternoon + moodData['😐'].evening + moodData['😐'].night,
+                    moodData['😕'].morning + moodData['😕'].afternoon + moodData['😕'].evening + moodData['😕'].night,
+                    moodData['😞'].morning + moodData['😞'].afternoon + moodData['😞'].evening + moodData['😞'].night
+                ],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Эмоции'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Количество за день'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Обновляем график после загрузки данных
+updateChart();
+
+
+     function editEntry(id, morning_mood, afternoon_mood, evening_mood, night_mood, note) {
+        document.getElementById('entry_id').value = id;
+        document.getElementById('morning_mood').value = morning_mood;
+        document.getElementById('afternoon_mood').value = afternoon_mood;
+        document.getElementById('evening_mood').value = evening_mood;
+        document.getElementById('night_mood').value = night_mood;
+        document.getElementById('note').value = note;
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    // Функция для закрытия модального окна
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+</script>
+
+
+</body>
+</html>

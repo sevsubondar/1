@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в личный дневник</title>
+    <!-- Защита от Clickjacking
+    <meta http-equiv="X-Frame-Options" content="DENY">   Запрещает отображение страницы в iframe -->
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #A9B388; /* Laurel Green */
+            color: #5F6F52; /* Dark Olive Green */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Все элементы выстроятся в столбик */
+            height: 100vh;
+        }
+
+        h2 {
+            color: #5F6F52; /* Dark Olive Green */
+            margin-bottom: 20px; /* Отступ от заголовка */
+        }
+
+        /* Стили для формы */
+        form {
+            background-color: #FFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%; /* Чтобы форма была шириной 100% от контейнера */
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%; /* Ширина полей 100% */
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            width: 100%; /* Кнопка будет на всю ширину */
+            padding: 10px;
+            background-color: #5F6F52; /* Dark Olive Green */
+            color: white;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #4b5b44; /* Slightly darker */
+        }
+
+        p {
+            margin-top: 20px;
+        }
+
+        a {
+            color: #5F6F52; /* Dark Olive Green */
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h2>Вход в личный дневник</h2>
+    <form action="{{ url_for('login') }}" method="POST">
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" name="username" required><br>
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <input type="submit" value="Войти">
+    </form>
+    <p>Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрируйтесь</a></p>
+</body>
+</html>
